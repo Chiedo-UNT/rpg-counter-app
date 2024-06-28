@@ -2,7 +2,7 @@
   "name": "RPG Character Counter",
   "short_name": "RPG Counter",
   "description": "Une application pour gérer les compteurs de vos personnages de RPG",
-  "start_url": "./index.html",
+  "start_url": "./",
   "scope": ".",
   "display": "standalone",
   "background_color": "#ffffff",
@@ -13,11 +13,6 @@
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
-    },
-    {
-      "src": "icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png"
     }
   ]
 }
