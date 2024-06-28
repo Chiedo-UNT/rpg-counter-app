@@ -1,11 +1,11 @@
-const CACHE_NAME = 'rpg-counter-v1';
+const CACHE_NAME = 'rpg-counter-v2';
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/app.js',
-  '/manifest.json',
-  '/icon.png',
-  '/icon-512.png',
+  './',
+  './index.html',
+  './app.js',
+  './manifest.json',
+  './icon.png',
+  './icon-512.png',
   'https://unpkg.com/react@17/umd/react.production.min.js',
   'https://unpkg.com/react-dom@17/umd/react-dom.production.min.js',
   'https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css'
