@@ -13,6 +13,23 @@
     <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        @media (max-width: 640px) {
+            .counter-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .counter-name {
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+            .counter-controls {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+        }
+    </style>
 </head>
 <body>
     <div id="root"></div>
@@ -50,7 +67,7 @@
 
             const addCounter = (characterIndex) => {
                 const updatedCharacters = [...characters];
-                updatedCharacters[characterIndex].counters.push({ name: 'Nouveau compteur', current: 0, max: 0, color: '#FFFFFF' });
+                updatedCharacters[characterIndex].counters.push({ name: '', current: 0, max: 0, color: '#FFFFFF' });
                 setCharacters(updatedCharacters);
             };
 
@@ -88,13 +105,14 @@
                                 style={{ backgroundColor: counter.color }}
                                 onClick={() => colorMode && changeCounterColor(currentCharacter, index)}
                             >
-                                <div className="flex items-center justify-end">
+                                <div className="flex items-center justify-between counter-container">
                                     <input
                                         value={counter.name}
                                         onChange={(e) => updateCounter(currentCharacter, index, 'name', e.target.value)}
-                                        className="flex-grow mr-2 px-2 py-1 border rounded"
+                                        className="flex-grow mr-2 px-2 py-1 border rounded counter-name"
+                                        placeholder="Nom du compteur"
                                     />
-                                    <div className="flex items-center">
+                                    <div className="flex items-center counter-controls">
                                         <button onClick={() => updateCounter(currentCharacter, index, 'current', Math.max(0, counter.current - 1))} className="px-2 py-1 bg-gray-200 text-black rounded">
                                             -
                                         </button>
@@ -102,17 +120,17 @@
                                         <button onClick={() => updateCounter(currentCharacter, index, 'current', counter.current + 1)} className="px-2 py-1 bg-gray-200 text-black rounded">
                                             +
                                         </button>
+                                        <input
+                                            type="number"
+                                            value={counter.max}
+                                            onChange={(e) => updateCounter(currentCharacter, index, 'max', parseInt(e.target.value) || 0)}
+                                            className="w-12 ml-2 text-center px-2 py-1 border rounded"
+                                            placeholder="Max"
+                                            style={{ appearance: 'textfield' }}
+                                        />
                                     </div>
-                                    <input
-                                        type="number"
-                                        value={counter.max}
-                                        onChange={(e) => updateCounter(currentCharacter, index, 'max', parseInt(e.target.value) || 0)}
-                                        className="w-12 ml-2 text-center px-2 py-1 border rounded"
-                                        placeholder="Max"
-                                        style={{ appearance: 'textfield' }}
-                                    />
                                     {deleteMode && (
-                                        <button onClick={() => deleteCounter(currentCharacter, index)} className="ml-2 px-2 py-1 bg-red-500 text-white rounded">
+                                        <button onClick={() => deleteCounter(currentCharacter, index)} className="mt-2 px-2 py-1 bg-red-500 text-white rounded">
                                             Supprimer
                                         </button>
                                     )}
