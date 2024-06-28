@@ -5,26 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Compteurs RPG</title>
     <link rel="manifest" href="./manifest.json">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="apple-mobile-web-app-title" content="RPG Counter">
-    <link rel="apple-touch-icon" href="./icon.png">
     <script src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 <body>
     <div id="root"></div>
     <script src="./app.js"></script>
     <script>
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('./sw.js')
-                .then(registration => {
-                    console.log('Service Worker enregistré avec succès:', registration);
-                })
-                .catch(error => {
-                    console.log('Échec de l\'enregistrement du Service Worker:', error);
-                });
+            navigator.serviceWorker.register('./sw.js').catch(error => {
+                console.log('Erreur d\'enregistrement du Service Worker:', error);
+            });
         }
     </script>
 </body>
