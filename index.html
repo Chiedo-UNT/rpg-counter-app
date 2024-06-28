@@ -4,16 +4,77 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Compteurs RPG</title>
-    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <link rel="manifest" href="/manifest.json">
+    <script src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 <body>
     <div id="root"></div>
     <script type="text/babel">
+        const loadFromLocalStorage = () => {
+            const saved = localStorage.getItem('rpgCharacters');
+            return saved ? JSON.parse(saved) : [];
+        };
+
+        const saveToLocalStorage = (characters) => {
+            localStorage.setItem('rpgCharacters', JSON.stringify(characters));
+        };
+
         const CharacterCounterApp = () => {
-            // ... (le reste du code state et des fonctions reste inchangé)
+            const [characters, setCharacters] = React.useState(loadFromLocalStorage());
+            const [currentCharacter, setCurrentCharacter] = React.useState(null);
+            const [newCharacterName, setNewCharacterName] = React.useState('');
+            const [deleteMode, setDeleteMode] = React.useState(false);
+            const [colorMode, setColorMode] = React.useState(false);
+            const [selectedColor, setSelectedColor] = React.useState(null);
+
+            React.useEffect(() => {
+                saveToLocalStorage(characters);
+            }, [characters]);
+
+            const pastelColors = [
+                '#FFB3BA', '#FFDFBA', '#FFFFBA', '#BAFFC9', '#BAE1FF',
+                '#F0E68C', '#DDA0DD', '#E6E6FA', '#FFA07A', '#98FB98'
+            ];
+
+            const addCharacter = () => {
+                if (newCharacterName) {
+                    setCharacters([...characters, { name: newCharacterName, counters: [] }]);
+                    setNewCharacterName('');
+                }
+            };
+
+            const deleteCharacter = (index) => {
+                setCharacters(characters.filter((_, i) => i !== index));
+            };
+
+            const addCounter = (characterIndex) => {
+                const updatedCharacters = [...characters];
+                updatedCharacters[characterIndex].counters.push({ name: 'Nouveau compteur', current: 0, max: 0, color: '#FFFFFF' });
+                setCharacters(updatedCharacters);
+            };
+
+            const updateCounter = (characterIndex, counterIndex, field, value) => {
+                const updatedCharacters = [...characters];
+                updatedCharacters[characterIndex].counters[counterIndex][field] = value;
+                setCharacters(updatedCharacters);
+            };
+
+            const deleteCounter = (characterIndex, counterIndex) => {
+                const updatedCharacters = [...characters];
+                updatedCharacters[characterIndex].counters.splice(counterIndex, 1);
+                setCharacters(updatedCharacters);
+            };
+
+            const changeCounterColor = (characterIndex, counterIndex) => {
+                if (selectedColor) {
+                    const updatedCharacters = [...characters];
+                    updatedCharacters[characterIndex].counters[counterIndex].color = selectedColor;
+                    setCharacters(updatedCharacters);
+                }
+            };
 
             if (currentCharacter !== null) {
                 return (
@@ -60,15 +121,74 @@
                                 </div>
                             </div>
                         ))}
-                        {/* ... (le reste du code pour les boutons et le mode couleur reste inchangé) */}
+                        <div className="flex justify-between mt-4">
+                            <button onClick={() => addCounter(currentCharacter)} className="px-4 py-2 bg-green-500 text-white rounded">
+                                + Nouveau compteur
+                            </button>
+                            <button onClick={() => setDeleteMode(!deleteMode)} className="px-4 py-2 bg-yellow-500 text-white rounded">
+                                {deleteMode ? 'Quitter le mode suppression' : 'Mode suppression'}
+                            </button>
+                            <button onClick={() => setColorMode(!colorMode)} className="px-4 py-2 bg-purple-500 text-white rounded">
+                                {colorMode ? 'Quitter le mode couleur' : 'Mode couleur'}
+                            </button>
+                        </div>
+                        {colorMode && (
+                            <div className="mt-4 flex flex-wrap justify-center">
+                                {pastelColors.map((color, index) => (
+                                    <div
+                                        key={index}
+                                        className="w-8 h-8 m-1 rounded-full cursor-pointer border-2 border-gray-300"
+                                        style={{ backgroundColor: color }}
+                                        onClick={() => setSelectedColor(color)}
+                                    />
+                                ))}
+                            </div>
+                        )}
                     </div>
                 );
             }
 
-            // ... (le code pour la liste des personnages reste inchangé)
+            return (
+                <div className="p-4">
+                    <h1 className="text-2xl font-bold mb-4">Mes personnages</h1>
+                    {characters.map((character, index) => (
+                        <div key={index} className="mb-4 p-4 border rounded">
+                            <div className="flex justify-between items-center">
+                                <span onClick={() => setCurrentCharacter(index)} className="cursor-pointer">
+                                    {character.name}
+                                </span>
+                                {deleteMode && (
+                                    <button onClick={() => deleteCharacter(index)} className="px-2 py-1 bg-red-500 text-white rounded">
+                                        Supprimer
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+                    ))}
+                    <div className="flex mt-4">
+                        <input
+                            value={newCharacterName}
+                            onChange={(e) => setNewCharacterName(e.target.value)}
+                            placeholder="Nom du nouveau personnage"
+                            className="flex-grow mr-2 px-2 py-1 border rounded"
+                        />
+                        <button onClick={addCharacter} className="px-4 py-2 bg-blue-500 text-white rounded">
+                            Ajouter
+                        </button>
+                    </div>
+                    <button onClick={() => setDeleteMode(!deleteMode)} className="mt-4 px-4 py-2 bg-yellow-500 text-white rounded">
+                        {deleteMode ? 'Quitter le mode suppression' : 'Mode suppression'}
+                    </button>
+                </div>
+            );
         };
 
         ReactDOM.render(<CharacterCounterApp />, document.getElementById('root'));
+    </script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js');
+        }
     </script>
 </body>
 </html>
