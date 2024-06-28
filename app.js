@@ -12,18 +12,24 @@ const CharacterCounterApp = () => {
     const [currentCharacter, setCurrentCharacter] = React.useState(null);
     const [newCharacterName, setNewCharacterName] = React.useState('');
     const [deleteMode, setDeleteMode] = React.useState(false);
-    const [colorMode, setColorMode] = React.useState(false);
-    const [selectedColor, setSelectedColor] = React.useState(null);
 
     React.useEffect(() => {
         saveToLocalStorage(characters);
     }, [characters]);
 
-    // ... (le reste du code de votre composant React)
+    const addCharacter = () => {
+        if (newCharacterName) {
+            setCharacters([...characters, { name: newCharacterName, counters: [] }]);
+            setNewCharacterName('');
+        }
+    };
 
-    return (
-        // ... (le JSX de votre composant)
-    );
+    const deleteCharacter = (index) => {
+        setCharacters(characters.filter((_, i) => i !== index));
+    };
+
+    // Render logic here
+    return React.createElement('div', null, 'RPG Character Counter App');
 };
 
 ReactDOM.render(React.createElement(CharacterCounterApp), document.getElementById('root'));
